@@ -181,7 +181,8 @@ export default {
             url: "http://localhost:3000" + res.data.list.img
           }
         ];
-        console.log(this.ruleForm);
+        //点击编辑进来先调用一遍这个方法 保证二级分类的回显
+        this.catetree(res.data.list.first_cateid)
       });
     } else {
       //点击添加跳的页面
@@ -189,7 +190,7 @@ export default {
       this.buttonTitle = "添加";
     }
     //一级分类下拉框的值
-    this.$http.get("/getcatetree").then(res => {
+    this.$http.get("/catelist", { pid: 0 }).then(res => {
       this.list = res.data.list;
     });
     //商品规格和属性下拉框的值
@@ -209,13 +210,10 @@ export default {
       this.ruleForm.img = file.raw;
     },
     //根据一级分类获取二级分类的方法
-    catetree() {
-      let cateid = this.ruleForm.first_cateid;
-      this.$http.get("/getcatetree").then(res => {
-        this.menuList = res.data.list.filter(item => {
-          return cateid == item.id;
-        })[0].children;
-      });
+    catetree(id) {
+      // let cateid = this.ruleForm.first_cateid;
+      this.$http.get("/catelist", { pid: id }).then(res => {
+        this.menuList = res.data.list});
     },
     //根据商品规格获取商品属性的方法
     getAttr() {

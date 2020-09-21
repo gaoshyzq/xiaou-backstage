@@ -44,7 +44,14 @@
       </el-table-column>
     </el-table>
     <!-- 分页器 -->
-    <el-pagination background layout="prev, pager, next" :total="1000">
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="2"
+      :current-page="current"
+      @current-change="currentChange"
+    >
     </el-pagination>
   </div>
 </template>
@@ -54,15 +61,24 @@ export default {
   data() {
     return {
       tableData: [],
+      total:0,
+      current:1, 
     };
   },
   mounted() {
     this.getList();
-    
+    this.$http.get("/specscount").then(res => {
+      this.total = res.data.list[0].total;
+    });
   },
   methods: {
+          //当前页码被改变时触发的事件
+     currentChange(page) {
+      this.current = page;
+      this.getList();
+    },
     getList() {
-      this.$http.get("/specslist").then(res => {
+      this.$http.get("/specslist",{ page: this.current, size: 2 }).then(res => {
         // console.log(res);
         this.tableData = res.data.list;
       });

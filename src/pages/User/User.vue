@@ -43,7 +43,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination background layout="prev, pager, next" :total="1000">
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="2"
+      :current-page="current"
+      @current-change="currentChange"
+    >
     </el-pagination>
   </div>
 </template>
@@ -53,7 +60,9 @@ export default {
   data() {
     return {
       tableData: [],
-      rolelist: []
+      rolelist: [],
+      total: 0,
+      current: 1
     };
   },
   filters: {
@@ -73,10 +82,20 @@ export default {
     this.$http.get("/rolelist").then(res => {
       this.rolelist = res.data.list;
     });
+    //分页
+    this.$http.get("/usercount").then(res => {
+      // console.log(res.data.list);
+      this.total = res.data.list[0].total;
+    });
   },
   methods: {
+    //当前页码被改变时触发的事件
+    currentChange(page) {
+      this.current = page;
+      this.getList();
+    },
     getList() {
-      this.$http.get("/userlist", { size: 10, page: 1 }).then(res => {
+      this.$http.get("/userlist", { page: this.current, size: 2 }).then(res => {
         // console.log(res);
         this.tableData = res.data.list;
       });

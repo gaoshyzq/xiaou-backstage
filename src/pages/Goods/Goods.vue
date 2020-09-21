@@ -19,9 +19,9 @@
       <el-table-column prop="id" label="商品编号" width="80"> </el-table-column>
       <el-table-column prop="goodsname" label="商品名称" width="120">
       </el-table-column>
-       <el-table-column prop="price" label="商品价格" width="120">
+      <el-table-column prop="price" label="商品价格" width="120">
       </el-table-column>
-       <el-table-column prop="market_price" label="市场价格" width="120">
+      <el-table-column prop="market_price" label="市场价格" width="120">
       </el-table-column>
 
       <!-- 上传到商品分类页面的图片是个本地地址，用插槽语法和拼接的方式给上端口地址让其可以正常显示 -->
@@ -33,15 +33,23 @@
 
       <el-table-column label="是否新品">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.isnew == 1">{{ scope.row.isnew | ishotFormat }}</el-tag>
-          <el-tag v-if="scope.row.isnew == 2" type="danger">{{ scope.row.isnew | ishotFormat }}</el-tag>
+          <el-tag v-if="scope.row.isnew == 1">{{
+            scope.row.isnew | ishotFormat
+          }}</el-tag>
+          <el-tag v-if="scope.row.isnew == 2" type="danger">{{
+            scope.row.isnew | ishotFormat
+          }}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column label="是否热卖">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.ishot == 1">{{ scope.row.ishot | ishotFormat }}</el-tag>
-          <el-tag v-if="scope.row.ishot == 2" type="danger">{{ scope.row.ishot | ishotFormat }}</el-tag>
+          <el-tag v-if="scope.row.ishot == 1">{{
+            scope.row.ishot | ishotFormat
+          }}</el-tag>
+          <el-tag v-if="scope.row.ishot == 2" type="danger">{{
+            scope.row.ishot | ishotFormat
+          }}</el-tag>
         </template>
       </el-table-column>
 
@@ -64,7 +72,14 @@
       </el-table-column>
     </el-table>
     <!-- 分页器 -->
-    <el-pagination background layout="prev, pager, next" :total="1000" @current-change="currentChange">
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="2"
+      :current-page="current"
+      @current-change="currentChange"
+    >
     </el-pagination>
   </div>
 </template>
@@ -74,27 +89,29 @@ export default {
   data() {
     return {
       tableData: [],
-      count:0,
-      page:0,
-      current:2
+      total:0,
+      current:1, 
     };
   },
   mounted() {
     this.getList();
     this.$http.get("/goodscount").then(res => {
-      // console.log(res.data.list);
-      this.count = res.data.list[0].total
-    })
+      this.total = res.data.list[0].total;
+    });
   },
   methods: {
-    currentChange(page){//当前页码被改变时触发的事件
-      this.current = page
-      this.getList()
+    currentChange(page) {
+      //当前页码被改变时触发的事件
+      this.current = page;
+      this.getList();
     },
-    getList() {//渲染页面的方法
-      this.$http.get("/goodslist", { size: this.current, page: 1 }).then(res => {
-        this.tableData = res.data.list;
-      });
+    getList() {
+      //渲染页面的方法
+      this.$http
+        .get("/goodslist", { page: this.current, size: 2 })
+        .then(res => {
+          this.tableData = res.data.list;
+        });
     },
     //修改
     handleEdit(index, row) {
