@@ -71,8 +71,9 @@ export default {
     if (this.id) {
       this.$http.get("/memberinfo", { uid: this.id }).then(res => {
         console.log(res);
-        this.ruleForm.roleid = res.data.list.roleid;
-        this.ruleForm.username = res.data.list.username;
+        this.ruleForm = res.data.list
+        this.ruleForm.status = 1 ? true : false
+        this.ruleForm.password = ""
       });
     }
 

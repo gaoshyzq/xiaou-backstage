@@ -16,8 +16,8 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
       <el-table-column prop="id" label="用户编号" width="80"> </el-table-column>
-      <el-table-column prop="username" label="昵称" width="280"></el-table-column>
-      <el-table-column prop="username" label="手机号" width="300"></el-table-column>
+      <el-table-column prop="nickname" label="昵称" width="280"></el-table-column>
+      <el-table-column prop="phone" label="手机号" width="300"></el-table-column>
      
 
       <el-table-column label="状态">
@@ -66,7 +66,7 @@ export default {
   methods: {
     getList() {
       this.$http.get("/memberlist").then(res => {
-        // console.log(res);
+        console.log(res);
         this.tableData = res.data.list;
       });
     },
